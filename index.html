@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bransz SMP - Premium Minecraft Server</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --primary: #00d4aa;
+            --secondary: #0891b2;
+            --accent: #f59e0b;
+            --dark: #0f172a;
+            --darker: #020617;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--darker);
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        /* Animated Background */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 212, 170, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 212, 170, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .bg-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 212, 170, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(60px);
+        }
+        
+        .glow-1 { top: -200px; left: -200px; }
+        .glow-2 { bottom: -200px; right: -200px; background: radial-gradient(circle, rgba(8, 145, 178, 0.15) 0%, transparent 70%); }
+        
+        /* Glassmorphism */
+        .glass {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glass-card {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        
+        /* Welcome Screen */
+        #welcomeScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            background: linear-gradient(135deg, rgba(2, 6, 23, 0.95) 0%, rgba(15, 23, 42, 0.98) 100%);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+        
+        #welcomeScreen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        
+        .welcome-content {
+            text-align: center;
+            animation: welcomeFloat 3s ease-in-out infinite;
+        }
+        
+        @keyframes welcomeFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .welcome-logo {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 2rem;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 212, 170, 0.3);
+            animation: logoPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes logoPulse {
+            0%, 100% { box-shadow: 0 20px 60px rgba(0, 212, 170, 0.3); }
+            50% { box-shadow: 0 30px 80px rgba(0, 212, 170, 0.5); }
+        }
+        
+        .enter-btn {
+            margin-top: 2rem;
+            padding: 1rem 3rem;
+            background: linear-gradient(135deg, #00d4aa 0%, #0891b2 100%);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: btnPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes btnPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 212, 170, 0.4); }
+            50% { box-shadow: 0 0 0 20px rgba(0, 212, 170, 0); }
+        }
+        
+        .enter-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, #00d4aa 0%, #0891b2 100%);
+            border: none;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px -10px rgba(0, 212, 170, 0.5);
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-gold {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #000;
+            font-weight: 700;
+        }
+        
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px -10px rgba(245, 158, 11, 0.5);
+        }
+        
+        /* Cards */
+        .feature-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 212, 170, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* Rank Cards */
+        .rank-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.95) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .rank-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .rank-card:hover::before {
+            opacity: 1;
+        }
+        
+        .rank-card.featured {
+            border-color: rgba(245, 158, 11, 0.5);
+            transform: scale(1.05);
+        }
+        
+        .rank-card.featured::after {
+            content: 'POPULAR';
+            position: absolute;
+            top: 15px;
+            right: -30px;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #000;
+            padding: 5px 40px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transform: rotate(45deg);
+        }
+        
+        /* Status Indicator */
+        .status-pulse {
+            position: relative;
+        }
+        
+        .status-pulse::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #00d4aa;
+            border-radius: 50%;
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.8; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+        
+        /* Input Fields */
+        .input-field {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .input-field:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+            outline: none;
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            border-radius: 5px;
+        }
+        
+        /* Animations */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #00d4aa 0%, #0891b2 50%, #00d4aa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: gradient-shift 3s ease infinite;
+        }
+        
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% center; }
+            50% { background-position: 100% center; }
+        }
+        
+        /* Navigation */
+        .nav-link {
+            position: relative;
+            color: #94a3b8;
+            transition: color 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: #00d4aa;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #00d4aa, #0891b2);
+            transition: width 0.3s;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* Toast */
+        .toast {
+            transform: translateX(150%);
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        /* Modal */
+        .modal {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.3s;
+        }
+        
+        .modal.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+        
+        /* Badge */
+        .discount-badge {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+        
+        /* Blog Image */
+        .blog-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 1rem 1rem 0 0;
+        }
+        
+        .blog-card {
+            overflow: hidden;
+        }
+        
+        /* Server Status Live */
+        .server-status-live {
+            background: linear-gradient(135deg, rgba(0, 212, 170, 0.1) 0%, rgba(8, 145, 178, 0.1) 100%);
+            border: 1px solid rgba(0, 212, 170, 0.3);
+        }
+        
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #00d4aa;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #00d4aa;
+            border-radius: 50%;
+            animation: liveBlink 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes liveBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+        
+        /* Loading Animation */
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(0, 212, 170, 0.3);
+            border-radius: 50%;
+            border-top-color: #00d4aa;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Image Upload Preview */
+        .image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 0.75rem;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        .image-preview.active {
+            display: block;
+        }
+        
+        /* Server Info Panel */
+        .server-info-panel {
+            background: linear-gradient(135deg, rgba(0, 212, 170, 0.05) 0%, rgba(8, 145, 178, 0.05) 100%);
+            border: 1px solid rgba(0, 212, 170, 0.2);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Welcome Screen -->
+    <div id="welcomeScreen">
+        <div class="welcome-content">
+            <img src="logo.png" alt="Bransz SMP Logo" class="welcome-logo" onerror="this.src='https://via.placeholder.com/150/00d4aa/ffffff?text=B'">
+            <h1 class="font-display font-bold text-4xl md:text-6xl text-white mb-4">Selamat Datang</h1>
+            <p class="text-xl md:text-2xl text-emerald-400 font-display mb-2">Di Website Bransz SMP</p>
+            <p class="text-gray-400 text-sm md:text-base max-w-md mx-auto px-4">Server Minecraft Survival Terbaik Indonesia</p>
+            <button class="enter-btn" onclick="enterWebsite()">
+                Masuk ke Website <i class="fas fa-arrow-right ml-2"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Background Effects -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass border-b border-white/10">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-3 group cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <img src="logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                    <div class="hidden w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-400 to-cyan-600 items-center justify-center text-white font-bold text-xl">B</div>
+                    <span class="font-display font-bold text-xl tracking-tight text-white">BRANSZ<span class="text-emerald-400">SMP</span></span>
+                </div>
+                
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#home" class="nav-link font-medium text-sm">Beranda</a>
+                    <a href="#features" class="nav-link font-medium text-sm">Fitur</a>
+                    <a href="#ranks" class="nav-link font-medium text-sm">Rank</a>
+                    <a href="#blog" class="nav-link font-medium text-sm">Blog</a>
+                    <a href="#ticket" class="nav-link font-medium text-sm">Bantuan</a>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div class="hidden lg:flex items-center gap-3 px-4 py-2 rounded-lg server-info-panel mr-4">
+                        <div class="live-indicator">
+                            <span class="live-dot"></span>
+                            <span>LIVE</span>
+                        </div>
+                        <div class="h-4 w-px bg-emerald-500/30"></div>
+                        <div class="text-sm">
+                            <span class="text-emerald-400 font-bold" id="navPlayerCount">0</span>
+                            <span class="text-gray-400 text-xs">/100</span>
+                        </div>
+                    </div>
+                    <button onclick="openStore()" class="btn-gold px-6 py-2.5 rounded-lg font-semibold text-sm flex items-center gap-2 hover:scale-105 transition-transform">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="hidden sm:inline">Store</span>
+                    </button>
+                    <button onclick="toggleAdmin()" class="glass px-4 py-2.5 rounded-lg font-medium text-sm text-gray-300 hover:text-white hover:border-emerald-500/50 transition-all">
+                        <i class="fas fa-lock"></i>
+                    </button>
+                    <button class="md:hidden text-2xl text-gray-300" onclick="toggleMobileMenu()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden glass border-t border-white/10">
+            <div class="container mx-auto px-6 py-4 space-y-4">
+                <div class="flex items-center justify-between py-2 border-b border-white/10 mb-4">
+                    <span class="text-emerald-400 font-bold text-sm">Server Status</span>
+                    <div class="live-indicator text-xs">
+                        <span class="live-dot"></span>
+                        <span>ONLINE</span>
+                    </div>
+                </div>
+                <a href="#home" class="block py-2 text-gray-300 hover:text-emerald-400">Beranda</a>
+                <a href="#features" class="block py-2 text-gray-300 hover:text-emerald-400">Fitur</a>
+                <a href="#ranks" class="block py-2 text-gray-300 hover:text-emerald-400">Rank</a>
+                <a href="#blog" class="block py-2 text-gray-300 hover:text-emerald-400">Blog</a>
+                <a href="#ticket" class="block py-2 text-gray-300 hover:text-emerald-400">Bantuan</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="mainContent" class="opacity-0 transition-opacity duration-1000">
+        
+        <!-- Hero Section with Live Status -->
+        <section id="home" class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="space-y-8">
+                        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-emerald-500/30 text-emerald-400 text-sm font-medium fade-up">
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 status-pulse"></span>
+                            Server Online 24/7
+                        </div>
+                        
+                        <h1 class="font-display font-bold text-5xl md:text-7xl leading-tight fade-up">
+                            Mulai Petualangan<br>
+                            <span class="gradient-text">Minecraft Terbaik</span>
+                        </h1>
+                        
+                        <p class="text-lg text-gray-400 max-w-lg fade-up">
+                            Bergabunglah dengan komunitas survival terbesar di Indonesia. 
+                            Rasakan pengalaman bermain yang berbeda dengan fitur-fitur eksklusif.
+                        </p>
+
+                        <!-- Live Server Status Card -->
+                        <div class="glass-card rounded-2xl p-6 space-y-4 fade-up server-status-live">
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="live-indicator text-lg">
+                                        <span class="live-dot w-3 h-3"></span>
+                                        <span>SERVER LIVE</span>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-xs text-gray-500 uppercase tracking-wider">Real-time</span>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <div class="bg-slate-800/50 rounded-xl p-4 text-center">
+                                    <p class="text-3xl font-bold text-white mb-1" id="heroPlayerCount">0</p>
+                                    <p class="text-gray-400 text-xs uppercase tracking-wider">Players Online</p>
+                                </div>
+                                <div class="bg-slate-800/50 rounded-xl p-4 text-center">
+                                    <p class="text-3xl font-bold text-emerald-400 mb-1" id="serverPing">20</p>
+                                    <p class="text-gray-400 text-xs uppercase tracking-wider">ms Ping</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center p-3 bg-slate-800/30 rounded-lg">
+                                    <span class="text-gray-400 text-sm"><i class="fas fa-server mr-2 text-emerald-400"></i>IP Address</span>
+                                    <code class="text-emerald-400 font-mono font-bold">play.branszsmp.net</code>
+                                </div>
+                                <div class="flex justify-between items-center p-3 bg-slate-800/30 rounded-lg">
+                                    <span class="text-gray-400 text-sm"><i class="fas fa-plug mr-2 text-emerald-400"></i>Port</span>
+                                    <code class="text-white font-mono">19132</code>
+                                </div>
+                                <div class="flex justify-between items-center p-3 bg-slate-800/30 rounded-lg">
+                                    <span class="text-gray-400 text-sm"><i class="fas fa-code-branch mr-2 text-emerald-400"></i>Version</span>
+                                    <span class="text-white text-sm">Java 1.8-1.21 | Bedrock 1.21</span>
+                                </div>
+                            </div>
+                            
+                            <button onclick="copyToClipboard('play.branszsmp.net:19132')" class="w-full btn-primary py-3 rounded-xl font-semibold text-white flex items-center justify-center gap-2 mt-4">
+                                <i class="fas fa-copy"></i>
+                                Salin IP Server
+                            </button>
+                        </div>
+
+                        <div class="flex flex-wrap gap-4 fade-up">
+                            <a href="https://chat.whatsapp.com/CkU1aHJlMR91iCIWk5CDk0" target="_blank" class="btn-primary px-8 py-4 rounded-xl font-semibold text-white flex items-center gap-3">
+                                <i class="fab fa-whatsapp text-xl"></i>
+                                Join Komunitas
+                            </a>
+                            <a href="https://whatsapp.com/channel/0029Vb7NIum7tkj8YShqpH3B" target="_blank" class="glass px-8 py-4 rounded-xl font-semibold text-white flex items-center gap-3 hover:bg-white/10 transition-all">
+                                <i class="fas fa-broadcast-tower"></i>
+                                Info Channel
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="relative hidden lg:block">
+                        <div class="relative w-full aspect-square max-w-lg mx-auto">
+                            <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 rounded-3xl blur-3xl animate-pulse"></div>
+                            <div class="relative glass-card rounded-3xl p-8 h-full flex items-center justify-center">
+                                <div class="text-center space-y-6">
+                                    <img src="logo.png" alt="Bransz SMP" class="w-32 h-32 mx-auto rounded-2xl object-cover shadow-2xl" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                                    <div class="hidden w-32 h-32 mx-auto bg-gradient-to-br from-emerald-400 to-cyan-600 rounded-2xl items-center justify-center text-6xl shadow-2xl">B</div>
+                                    
+                                    <div class="space-y-2">
+                                        <h3 class="font-display font-bold text-2xl text-white">Bransz SMP</h3>
+                                        <p class="text-emerald-400 font-medium">Survival • Community • Adventure</p>
+                                    </div>
+                                    
+                                    <!-- Live Player List Preview -->
+                                    <div class="bg-slate-800/50 rounded-xl p-4 text-left space-y-2 max-h-40 overflow-y-auto" id="playerList">
+                                        <p class="text-xs text-gray-500 uppercase tracking-wider mb-2">Online Players</p>
+                                        <!-- Player items will be added here -->
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-3 gap-4 pt-4">
+                                        <div class="text-center">
+                                            <p class="text-2xl font-bold text-white" id="statPlayers">0</p>
+                                            <p class="text-xs text-gray-400">Players</p>
+                                        </div>
+                                        <div class="text-center">
+                                            <p class="text-2xl font-bold text-white">24/7</p>
+                                            <p class="text-xs text-gray-400">Online</p>
+                                        </div>
+                                        <div class="text-center">
+                                            <p class="text-2xl font-bold text-emerald-400" id="statUptime">99%</p>
+                                            <p class="text-xs text-gray-400">Uptime</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="py-24 relative">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <h2 class="font-display font-bold text-4xl mb-4 fade-up">Fitur <span class="gradient-text">Unggulan</span></h2>
+                    <p class="text-gray-400 fade-up">Nikmati berbagai fitur eksklusif yang akan membuat pengalaman bermainmu lebih seru dan menyenangkan.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="feature-card rounded-2xl p-6 fade-up group">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                            🎨
+                        </div>
+                        <h3 class="font-display font-bold text-xl mb-2 text-white">Cosmetic System</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Kustomisasi karakter dengan berbagai cosmetic item keren dan unik.</p>
+                    </div>
+
+                    <div class="feature-card rounded-2xl p-6 fade-up group">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                            🎙️
+                        </div>
+                        <h3 class="font-display font-bold text-xl mb-2 text-white">Voice Chat</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Berkomunikasi langsung dengan pemain di sekitarmu.</p>
+                    </div>
+
+                    <div class="feature-card rounded-2xl p-6 fade-up group">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-yellow-500 to-orange-600 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                            🎲
+                        </div>
+                        <h3 class="font-display font-bold text-xl mb-2 text-white">Gatcha System</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Sistem gacha dengan hadiah menarik setiap harinya.</p>
+                    </div>
+
+                    <div class="feature-card rounded-2xl p-6 fade-up group">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                            🏆
+                        </div>
+                        <h3 class="font-display font-bold text-xl mb-2 text-white">Rank System</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">7 tier rank dengan benefit eksklusif untuk setiap tier.</p>
+                    </div>
+
+                    <div class="feature-card rounded-2xl p-6 fade-up group">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                            🛡️
+                        </div>
+                        <h3 class="font-display font-bold text-xl mb-2 text-white">Keep Inventory</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Jangan khawatir kehilangan item saat mati.</p>
+                    </div>
+
+                    <div class="feature-card rounded-2xl p-6 fade-up group">
+                        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-2xl mb-4 group-hover:scale-110 transition-transform">
+                            🏰
+                        </div>
+                        <h3 class="font-display font-bold text-xl mb-2 text-white">Claim Land</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Lindungi bangunanmu dari griefing dengan claim system.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ranks Section -->
+        <section id="ranks" class="py-24 relative bg-slate-900/50">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <h2 class="font-display font-bold text-4xl mb-4 fade-up">Pilih <span class="gradient-text">Rankmu</span></h2>
+                    <p class="text-gray-400 fade-up">Upgrade pengalaman bermainmu dengan benefit eksklusif.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="ranksContainer">
+                    <!-- Ranks loaded dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog Section -->
+        <section id="blog" class="py-24 relative">
+            <div class="container mx-auto px-6">
+                <div class="flex justify-between items-end mb-12">
+                    <div>
+                        <h2 class="font-display font-bold text-4xl mb-2 fade-up">Blog & <span class="gradient-text">Update</span></h2>
+                        <p class="text-gray-400 fade-up">Informasi terbaru seputar server dan komunitas.</p>
+                    </div>
+                </div>
+
+                <div id="blogContainer" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Blog posts loaded dynamically -->
+                </div>
+                
+                <div id="emptyBlog" class="hidden text-center py-16">
+                    <div class="w-24 h-24 mx-auto bg-slate-800 rounded-full flex items-center justify-center mb-4">
+                        <i class="fas fa-newspaper text-4xl text-gray-600"></i>
+                    </div>
+                    <p class="text-gray-500 text-lg">Belum ada postingan</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ticket Section -->
+        <section id="ticket" class="py-24 relative bg-slate-900/50">
+            <div class="container mx-auto px-6 max-w-2xl">
+                <div class="text-center mb-12">
+                    <h2 class="font-display font-bold text-4xl mb-4 fade-up">Pusat <span class="text-red-400">Bantuan</span></h2>
+                    <p class="text-gray-400 fade-up">Laporkan masalah atau kirim saran untuk perbaikan server.</p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-8 fade-up">
+                    <form id="ticketForm" onsubmit="submitTicket(event)" class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Judul Laporan</label>
+                            <input type="text" id="ticketTitle" required 
+                                class="input-field w-full px-4 py-3 rounded-xl text-white placeholder-gray-500"
+                                placeholder="Masukkan judul singkat...">
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Jenis Laporan</label>
+                                <select id="ticketType" required 
+                                    class="input-field w-full px-4 py-3 rounded-xl text-white bg-slate-800">
+                                    <option value="">Pilih jenis...</option>
+                                    <option value="Bug">Bug/Error</option>
+                                    <option value="Griefing">Griefing</option>
+                                    <option value="Cheating">Cheating</option>
+                                    <option value="Suggestion">Saran</option>
+                                    <option value="Other">Lainnya</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-300 mb-2">Username Minecraft</label>
+                                <input type="text" id="ticketPlayer" required 
+                                    class="input-field w-full px-4 py-3 rounded-xl text-white placeholder-gray-500"
+                                    placeholder="Nama MC kamu...">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Detail Laporan</label>
+                            <textarea id="ticketDesc" required rows="4"
+                                class="input-field w-full px-4 py-3 rounded-xl text-white placeholder-gray-500 resize-none"
+                                placeholder="Jelaskan detail masalah atau saranmu..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="w-full bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white font-semibold py-4 rounded-xl transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2">
+                            <i class="fas fa-paper-plane"></i>
+                            Kirim Laporan
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-white/10 bg-slate-900/80 backdrop-blur-lg">
+            <div class="container mx-auto px-6 py-12">
+                <div class="grid md:grid-cols-4 gap-8 mb-8">
+                    <div class="col-span-2">
+                        <div class="flex items-center gap-3 mb-4">
+                            <img src="logo.png" alt="Logo" class="w-10 h-10 rounded-lg object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                            <div class="hidden w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-400 to-cyan-600 items-center justify-center text-white font-bold">B</div>
+                            <span class="font-display font-bold text-xl text-white">BRANSZ<span class="text-emerald-400">SMP</span></span>
+                        </div>
+                        <p class="text-gray-400 text-sm leading-relaxed max-w-sm">
+                            Server Minecraft Survival Indonesia dengan komunitas yang ramah dan fitur-fitur modern.
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-white mb-4">Quick Links</h4>
+                        <ul class="space-y-2 text-sm text-gray-400">
+                            <li><a href="#features" class="hover:text-emerald-400 transition-colors">Fitur</a></li>
+                            <li><a href="#ranks" class="hover:text-emerald-400 transition-colors">Rank</a></li>
+                            <li><a href="#blog" class="hover:text-emerald-400 transition-colors">Blog</a></li>
+                            <li><a href="#" onclick="openStore()" class="hover:text-emerald-400 transition-colors">Store</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-white mb-4">Kontak</h4>
+                        <ul class="space-y-2 text-sm text-gray-400">
+                            <li class="flex items-center gap-2"><i class="fab fa-whatsapp text-emerald-400"></i> +62 851-6749-0302</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-envelope text-emerald-400"></i> admin@branszsmp.net</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <p class="text-gray-500 text-sm">© 2026 Bransz SMP. All rights reserved.</p>
+                    <div class="flex items-center gap-2 text-gray-600 text-xs">
+                        <span class="live-indicator text-xs">
+                            <span class="live-dot w-2 h-2"></span>
+                            <span>Server Online</span>
+                        </span>
+                        <span>|</span>
+                        <span>play.branszsmp.net</span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Store Modal -->
+    <div id="storeModal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+        <div class="modal-content glass-card rounded-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div class="p-6 border-b border-white/10 flex justify-between items-center bg-slate-800/50">
+                <div>
+                    <h2 class="font-display font-bold text-2xl text-white">Store</h2>
+                    <p class="text-gray-400 text-sm">Pilih rank yang sesuai dengan gaya bermainmu</p>
+                </div>
+                <button onclick="closeStore()" class="w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white transition-all">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto" id="storeContainer">
+                <!-- Store content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="hidden min-h-screen bg-slate-950 pt-20">
+        <!-- Login -->
+        <div id="adminLogin" class="min-h-screen flex items-center justify-center p-4">
+            <div class="glass-card rounded-2xl p-8 w-full max-w-md">
+                <div class="text-center mb-8">
+                    <div class="w-16 h-16 mx-auto bg-gradient-to-br from-emerald-400 to-cyan-600 rounded-2xl flex items-center justify-center text-2xl mb-4">
+                        <i class="fas fa-lock text-white"></i>
+                    </div>
+                    <h2 class="font-display font-bold text-2xl text-white">Admin Login</h2>
+                    <p class="text-gray-400 text-sm mt-2">Masuk ke panel administrasi</p>
+                </div>
+                <form onsubmit="adminLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Username</label>
+                        <input type="text" id="adminUser" required 
+                            class="input-field w-full px-4 py-3 rounded-xl text-white"
+                            placeholder="Username admin...">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                        <input type="password" id="adminPass" required 
+                            class="input-field w-full px-4 py-3 rounded-xl text-white"
+                            placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="w-full btn-primary py-3 rounded-xl font-semibold text-white mt-6">
+                        Masuk
+                    </button>
+                    <button type="button" onclick="toggleAdmin()" class="w-full py-3 text-gray-400 hover:text-white text-sm transition-colors">
+                        Kembali ke Website
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="adminDashboard" class="hidden container mx-auto px-6 py-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                <div>
+                    <h2 class="font-display font-bold text-3xl text-white">Dashboard</h2>
+                    <p class="text-gray-400">Kelola konten website Bransz SMP</p>
+                </div>
+                <button onclick="adminLogout()" class="px-6 py-2.5 rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all flex items-center gap-2">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+
+            <!-- Tabs -->
+            <div class="flex gap-2 mb-8 overflow-x-auto pb-2">
+                <button onclick="showAdminTab('posts')" class="admin-tab active px-6 py-3 rounded-xl font-medium text-sm whitespace-nowrap transition-all bg-emerald-500 text-white" data-tab="posts">
+                    <i class="fas fa-newspaper mr-2"></i>Blog Posts
+                </button>
+                <button onclick="showAdminTab('ranks')" class="admin-tab px-6 py-3 rounded-xl font-medium text-sm whitespace-nowrap transition-all bg-slate-800 text-gray-400 hover:text-white" data-tab="ranks">
+                    <i class="fas fa-crown mr-2"></i>Kelola Rank
+                </button>
+                <button onclick="showAdminTab('discount')" class="admin-tab px-6 py-3 rounded-xl font-medium text-sm whitespace-nowrap transition-all bg-slate-800 text-gray-400 hover:text-white" data-tab="discount">
+                    <i class="fas fa-percent mr-2"></i>Diskon
+                </button>
+            </div>
+
+            <!-- Blog Tab with Image Upload -->
+            <div id="tab-posts" class="admin-tab-content space-y-6">
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="font-display font-bold text-lg text-white mb-6">Buat Postingan Baru</h3>
+                    <form onsubmit="createPost(event)" class="space-y-4">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <input type="text" id="postTitle" placeholder="Judul postingan..." required
+                                class="input-field w-full px-4 py-3 rounded-xl text-white">
+                            <select id="postCategory" class="input-field w-full px-4 py-3 rounded-xl text-white bg-slate-800">
+                                <option value="Update">Update</option>
+                                <option value="Event">Event</option>
+                                <option value="News">News</option>
+                                <option value="Maintenance">Maintenance</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Image Upload -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Gambar Thumbnail</label>
+                            <div class="flex items-center gap-4">
+                                <label class="flex-1 cursor-pointer">
+                                    <input type="file" id="postImage" accept="image/*" class="hidden" onchange="previewImage(this)">
+                                    <div class="input-field w-full px-4 py-3 rounded-xl text-white flex items-center justify-center gap-2 border-dashed border-2 border-gray-600 hover:border-emerald-500 transition-colors">
+                                        <i class="fas fa-cloud-upload-alt text-emerald-400"></i>
+                                        <span id="fileName">Pilih gambar...</span>
+                                    </div>
+                                </label>
+                                <button type="button" onclick="clearImage()" class="px-4 py-3 rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-all">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                            <img id="imagePreview" class="image-preview" alt="Preview">
+                        </div>
+                        
+                        <textarea id="postContent" placeholder="Konten postingan..." required rows="4"
+                            class="input-field w-full px-4 py-3 rounded-xl text-white resize-none"></textarea>
+                        <button type="submit" class="btn-primary px-6 py-3 rounded-xl font-semibold text-white flex items-center gap-2">
+                            <i class="fas fa-plus"></i>
+                            Publish Post
+                        </button>
+                    </form>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="font-display font-bold text-lg text-white mb-6">Kelola Postingan</h3>
+                    <div id="adminPostsList" class="space-y-3">
+                        <!-- Posts list -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ranks Tab -->
+            <div id="tab-ranks" class="admin-tab-content hidden space-y-6">
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="font-display font-bold text-lg text-white mb-6">Tambah Rank Baru</h3>
+                    <form onsubmit="addRank(event)" class="space-y-4">
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <input type="text" id="newRankName" placeholder="Nama rank..." required
+                                class="input-field w-full px-4 py-3 rounded-xl text-white">
+                            <input type="number" id="newRankPrice" placeholder="Harga (Rp)..." required
+                                class="input-field w-full px-4 py-3 rounded-xl text-white">
+                        </div>
+                        <textarea id="newRankBenefits" placeholder="Benefits (satu per baris)..." required rows="3"
+                            class="input-field w-full px-4 py-3 rounded-xl text-white resize-none"></textarea>
+                        <select id="newRankColor" class="input-field w-full px-4 py-3 rounded-xl text-white bg-slate-800">
+                            <option value="gray">Gray</option>
+                            <option value="green">Green</option>
+                            <option value="blue">Blue</option>
+                            <option value="purple">Purple</option>
+                            <option value="yellow">Gold</option>
+                            <option value="red">Red</option>
+                        </select>
+                        <button type="submit" class="btn-primary px-6 py-3 rounded-xl font-semibold text-white flex items-center gap-2">
+                            <i class="fas fa-plus"></i>
+                            Tambah Rank
+                        </button>
+                    </form>
+                </div>
+
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="font-display font-bold text-lg text-white mb-6">Daftar Rank</h3>
+                    <div id="adminRanksList" class="space-y-3">
+                        <!-- Ranks list -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Discount Tab -->
+            <div id="tab-discount" class="admin-tab-content hidden">
+                <div class="glass-card rounded-2xl p-6 max-w-md">
+                    <h3 class="font-display font-bold text-lg text-white mb-6">Pengaturan Diskon</h3>
+                    <form onsubmit="setDiscount(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Persentase Diskon (%)</label>
+                            <input type="number" id="discountPercent" min="0" max="100" value="0" required
+                                class="input-field w-full px-4 py-3 rounded-xl text-white">
+                        </div>
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input type="checkbox" id="discountActive" class="w-5 h-5 rounded border-gray-600 text-emerald-500 focus:ring-emerald-500 bg-slate-800">
+                            <span class="text-gray-300">Aktifkan diskon</span>
+                        </label>
+                        <button type="submit" class="w-full btn-gold py-3 rounded-xl font-semibold">
+                            Simpan Pengaturan
+                        </button>
+                    </form>
+                    <div class="mt-6 p-4 bg-slate-800/50 rounded-xl border border-white/5">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-400 text-sm">Status</span>
+                            <span id="discountStatus" class="text-red-400 font-semibold text-sm">Tidak Aktif</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-400 text-sm">Diskon</span>
+                            <span id="discountValue" class="text-white font-bold">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast fixed bottom-6 right-6 z-50 glass-card px-6 py-4 rounded-xl border-l-4 border-emerald-500 flex items-center gap-3 max-w-sm">
+        <i class="fas fa-check-circle text-emerald-400 text-xl"></i>
+        <p id="toastMessage" class="text-white font-medium text-sm">Notification</p>
+    </div>
+
+    <script>
+        // Data
+        let ranks = [
+            { id: 1, name: "Brafz", price: 10000, benefits: ["FEED", "JOB LIMIT 5", "SETHOME 10", "CLAIM LAND 15", "BLOCK LIMIT 70K"], color: "gray", icon: "fa-cube", featured: false },
+            { id: 2, name: "Vip", price: 13000, benefits: ["SETHOME 12", "CLAIM LIMIT 17", "BLOCK LIMIT 80K", "NICKNAME"], color: "green", icon: "fa-star", featured: false },
+            { id: 3, name: "Mvp", price: 15000, benefits: ["CLAIM LIMIT 21", "BLOCK LIMIT 85K", "NICKNAME", "ANVIL", "SETHOME 15"], color: "blue", icon: "fa-trophy", featured: false },
+            { id: 4, name: "Victorial", price: 20000, benefits: ["CLAIM LIMIT 25", "BLOCK LIMIT 89K", "NICKNAME", "ANVIL", "SETHOME 18", "ENDERCHEST"], color: "purple", icon: "fa-crown", featured: true },
+            { id: 5, name: "Supreme", price: 30000, benefits: ["CLAIM LIMIT 30", "BLOCK LIMIT 91K", "NICKNAME", "SETHOME 21", "SKULL", "FLYING", "TIME"], color: "yellow", icon: "fa-gem", featured: false },
+            { id: 6, name: "Elite", price: 100000, benefits: ["GOD MODE", "TIME", "WEATHER", "ANVIL", "SKULL", "SETHOME 28", "CLAIM LIMIT 35", "BLOCK LIMIT 95K", "FLYING", "NICKNAME", "HEAL", "REPAIR", "FEED", "TAG CUSTOM"], color: "red", icon: "fa-dragon", featured: false },
+            { id: 7, name: "Ultra", price: 150000, benefits: ["GOD MODE", "TIME", "WEATHER", "ANVIL", "SKULL", "SETHOME 54", "CLAIM LIMIT 49", "BLOCK LIMIT 69K", "FLYING", "NICKNAME", "HEAL", "REPAIR", "FEED", "TAG CUSTOM", "JUMPS", "VISION"], color: "purple", icon: "fa-superpowers", featured: false }
+        ];
+
+        let posts = [];
+        let discount = { active: false, percent: 0 };
+        let isAdmin = false;
+        const ADMIN_USER = "Zyxzs";
+        const ADMIN_PASS = "rikzz123";
+        const ADMIN_WA = "6285167490302";
+        
+        // Current image for post
+        let currentPostImage = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            renderRanks();
+            renderBlog();
+            initAnimations();
+            
+            // Check if user has visited before
+            if (localStorage.getItem('bransz_visited')) {
+                skipWelcome();
+            }
+        });
+
+        // Welcome Screen Functions
+        function enterWebsite() {
+            const welcome = document.getElementById('welcomeScreen');
+            const main = document.getElementById('mainContent');
+            
+            welcome.classList.add('hidden');
+            main.classList.remove('opacity-0');
+            
+            localStorage.setItem('bransz_visited', 'true');
+            
+            // Start live server status updates
+            startLiveStatus();
+        }
+
+        function skipWelcome() {
+            const welcome = document.getElementById('welcomeScreen');
+            const main = document.getElementById('mainContent');
+            
+            welcome.style.display = 'none';
+            main.classList.remove('opacity-0');
+            startLiveStatus();
+        }
+
+        // Live Server Status
+        function startLiveStatus() {
+            updateServerStatus();
+            setInterval(updateServerStatus, 5000); // Update every 5 seconds
+        }
+
+        async function updateServerStatus() {
+            try {
+                // Simulating live status - in production, replace with actual API
+                // Using mcapi.us or similar service for real Minecraft server status
+                const mockPlayers = Math.floor(Math.random() * 35) + 15;
+                const mockPing = Math.floor(Math.random() * 30) + 10;
+                const mockList = generateMockPlayerList(mockPlayers);
+                
+                // Update all status elements
+                document.getElementById('heroPlayerCount').textContent = mockPlayers;
+                document.getElementById('navPlayerCount').textContent = mockPlayers;
+                document.getElementById('statPlayers').textContent = mockPlayers;
+                document.getElementById('serverPing').textContent = mockPing;
+                
+                // Update player list
+                const playerListEl = document.getElementById('playerList');
+                if (playerListEl) {
+                    playerListEl.innerHTML = `
+                        <p class="text-xs text-gray-500 uppercase tracking-wider mb-2">Online Players (${mockPlayers})</p>
+                        ${mockList.map(p => `
+                            <div class="flex items-center gap-2 text-sm text-gray-300 py-1">
+                                <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+                                ${p}
+                            </div>
+                        `).join('')}
+                    `;
+                }
+                
+                // Update uptime (simulated)
+                const uptime = (99 + Math.random()).toFixed(1);
+                const uptimeEl = document.getElementById('statUptime');
+                if (uptimeEl) uptimeEl.textContent = uptime + '%';
+                
+            } catch (error) {
+                console.log('Status update error:', error);
+            }
+        }
+
+        function generateMockPlayerList(count) {
+            const names = ['Steve', 'Alex', 'Notch', 'Herobrine', 'Dream', 'Techno', 'Philza', 'Tommy', 'Tubbo', 'Ranboo', 
+                          'Zyxzs', 'Bransz', 'Minecrafter', 'ProPlayer', 'Noob123', 'Diamond', 'Emerald', 'GoldRush'];
+            const shuffled = names.sort(() => 0.5 - Math.random());
+            return shuffled.slice(0, Math.min(count, 8)); // Show max 8 names
+        }
+
+        // GSAP Animations
+        function initAnimations() {
+            gsap.registerPlugin(ScrollTrigger);
+            
+            gsap.utils.toArray('.fade-up').forEach((elem, i) => {
+                gsap.fromTo(elem, 
+                    { opacity: 0, y: 30 },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.8,
+                        delay: i * 0.1,
+                        scrollTrigger: {
+                            trigger: elem,
+                            start: "top 85%",
+                            toggleActions: "play none none reverse"
+                        }
+                    }
+                );
+            });
+        }
+
+        // Storage
+        function saveData() {
+            localStorage.setItem('bransz_data', JSON.stringify({ ranks, posts, discount }));
+        }
+
+        function loadData() {
+            const data = localStorage.getItem('bransz_data');
+            if (data) {
+                const parsed = JSON.parse(data);
+                ranks = parsed.ranks || ranks;
+                posts = parsed.posts || [];
+                discount = parsed.discount || { active: false, percent: 0 };
+            }
+        }
+
+        // Image Upload Functions
+        function previewImage(input) {
+            const preview = document.getElementById('imagePreview');
+            const fileName = document.getElementById('fileName');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    currentPostImage = e.target.result;
+                    preview.src = e.target.result;
+                    preview.classList.add('active');
+                    fileName.textContent = input.files[0].name;
+                };
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function clearImage() {
+            const input = document.getElementById('postImage');
+            const preview = document.getElementById('imagePreview');
+            const fileName = document.getElementById('fileName');
+            
+            input.value = '';
+            preview.src = '';
+            preview.classList.remove('active');
+            fileName.textContent = 'Pilih gambar...';
+            currentPostImage = null;
+        }
+
+        // Render Functions
+        function renderRanks() {
+            const containers = ['ranksContainer', 'storeContainer'];
+            const colorMap = {
+                gray: 'from-gray-500 to-gray-700',
+                green: 'from-emerald-500 to-green-700',
+                blue: 'from-blue-500 to-cyan-700',
+                purple: 'from-purple-500 to-violet-700',
+                yellow: 'from-amber-400 to-yellow-600',
+                red: 'from-red-500 to-rose-700'
+            };
+
+            containers.forEach(containerId => {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+
+                let html = containerId === 'storeContainer' ? '<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">' : '';
+                
+                ranks.forEach(rank => {
+                    const finalPrice = discount.active ? Math.floor(rank.price * (1 - discount.percent / 100)) : rank.price;
+                    const discountBadge = discount.active ? `<span class="discount-badge absolute -top-3 right-4">-${discount.percent}%</span>` : '';
+                    const featuredClass = rank.featured ? 'featured' : '';
+                    
+                    const cardHtml = `
+                        <div class="rank-card ${featuredClass} rounded-2xl p-6 ${containerId === 'storeContainer' ? '' : 'fade-up'}">
+                            ${discountBadge}
+                            <div class="flex items-center gap-4 mb-6">
+                                <div class="w-14 h-14 rounded-xl bg-gradient-to-br ${colorMap[rank.color]} flex items-center justify-center text-2xl text-white shadow-lg">
+                                    <i class="fas ${rank.icon}"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-display font-bold text-xl text-white">${rank.name}</h3>
+                                    <p class="text-emerald-400 font-bold text-lg">Rp ${finalPrice.toLocaleString()}</p>
+                                    ${discount.active ? `<p class="text-gray-500 text-xs line-through">Rp ${rank.price.toLocaleString()}</p>` : ''}
+                                </div>
+                            </div>
+                            <ul class="space-y-2 mb-6">
+                                ${rank.benefits.map(b => `
+                                    <li class="flex items-center gap-2 text-sm text-gray-400">
+                                        <i class="fas fa-check text-emerald-400 text-xs"></i>
+                                        ${b}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                            <button onclick="buyRank('${rank.name}', ${finalPrice})" class="w-full btn-gold py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2">
+                                <i class="fas fa-shopping-cart"></i>
+                                Beli Rank
+                            </button>
+                        </div>
+                    `;
+                    html += cardHtml;
+                });
+                
+                if (containerId === 'storeContainer') html += '</div>';
+                container.innerHTML = html;
+            });
+        }
+
+        function renderBlog() {
+            const container = document.getElementById('blogContainer');
+            const empty = document.getElementById('emptyBlog');
+            
+            if (posts.length === 0) {
+                container.innerHTML = '';
+                empty.classList.remove('hidden');
+                return;
+            }
+            
+            empty.classList.add('hidden');
+            container.innerHTML = posts.map(post => `
+                <article class="glass-card rounded-2xl overflow-hidden hover:transform hover:scale-[1.02] transition-all duration-300 cursor-pointer blog-card" onclick="readPost(${post.id})">
+                    ${post.image ? `<img src="${post.image}" alt="${post.title}" class="blog-image">` : '<div class="h-2 bg-gradient-to-r from-emerald-400 to-cyan-500"></div>'}
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-semibold">${post.category}</span>
+                            <span class="text-gray-500 text-xs">${post.date}</span>
+                        </div>
+                        <h3 class="font-display font-bold text-lg text-white mb-2 line-clamp-2">${post.title}</h3>
+                        <p class="text-gray-400 text-sm line-clamp-3">${post.content}</p>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        function renderAdminPosts() {
+            const container = document.getElementById('adminPostsList');
+            container.innerHTML = posts.length ? posts.map(post => `
+                <div class="flex justify-between items-center p-4 bg-slate-800/50 rounded-xl border border-white/5">
+                    <div class="flex items-center gap-3">
+                        ${post.image ? `<img src="${post.image}" class="w-12 h-12 rounded-lg object-cover">` : '<div class="w-12 h-12 rounded-lg bg-emerald-500/20 flex items-center justify-center"><i class="fas fa-image text-emerald-400"></i></div>'}
+                        <div>
+                            <h4 class="font-semibold text-white">${post.title}</h4>
+                            <p class="text-sm text-gray-400">${post.category} • ${post.date}</p>
+                        </div>
+                    </div>
+                    <button onclick="deletePost(${post.id})" class="w-8 h-8 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 flex items-center justify-center transition-all">
+                        <i class="fas fa-trash text-sm"></i>
+                    </button>
+                </div>
+            `).join('') : '<p class="text-gray-500 text-center py-4">Belum ada postingan</p>';
+        }
+
+        function renderAdminRanks() {
+            const container = document.getElementById('adminRanksList');
+            container.innerHTML = ranks.map(rank => `
+                <div class="flex justify-between items-center p-4 bg-slate-800/50 rounded-xl border border-white/5">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500 to-cyan-600 flex items-center justify-center text-white">
+                            <i class="fas ${rank.icon}"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-white">${rank.name}</h4>
+                            <p class="text-sm text-emerald-400">Rp ${rank.price.toLocaleString()}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editRank(${rank.id})" class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 hover:bg-blue-500/20 flex items-center justify-center transition-all">
+                            <i class="fas fa-edit text-sm"></i>
+                        </button>
+                        <button onclick="deleteRank(${rank.id})" class="w-8 h-8 rounded-lg bg-red-500/10 text-red-400 hover:bg-red-500/20 flex items-center justify-center transition-all">
+                            <i class="fas fa-trash text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Actions
+        function buyRank(name, price) {
+            const msg = `Halo Admin Bransz SMP!%0A%0ASaya ingin membeli rank *${name}*%0AHarga: Rp ${price.toLocaleString()}%0A%0ANama Minecraft: [ISI NAMA]%0AMetode Pembayaran: [DANA/GOPAY/QRIS]%0A%0ATerima kasih!`;
+            window.open(`https://wa.me/${ADMIN_WA}?text=${msg}`, '_blank');
+        }
+
+        function submitTicket(e) {
+            e.preventDefault();
+            const title = document.getElementById('ticketTitle').value;
+            const type = document.getElementById('ticketType').value;
+            const desc = document.getElementById('ticketDesc').value;
+            const player = document.getElementById('ticketPlayer').value;
+            
+            const msg = `*LAPORAN BARU - BRANSZ SMP*%0A%0A👤 *Dari:* ${player}%0A📝 *Judul:* ${title}%0A🏷️ *Jenis:* ${type}%0A%0A📄 *Detail:*%0A${desc}%0A%0A_Website Ticket System_`;
+            
+            window.open(`https://wa.me/${ADMIN_WA}?text=${msg}`, '_blank');
+            showToast('Laporan terkirim ke WhatsApp admin!');
+            e.target.reset();
+        }
+
+        function createPost(e) {
+            e.preventDefault();
+            const newPost = {
+                id: Date.now(),
+                title: document.getElementById('postTitle').value,
+                content: document.getElementById('postContent').value,
+                category: document.getElementById('postCategory').value,
+                date: new Date().toLocaleDateString('id-ID'),
+                image: currentPostImage
+            };
+            
+            posts.unshift(newPost);
+            saveData();
+            renderBlog();
+            renderAdminPosts();
+            showToast('Postingan berhasil dipublish!');
+            
+            // Reset form and image
+            e.target.reset();
+            clearImage();
+        }
+
+        function deletePost(id) {
+            if (confirm('Hapus postingan ini?')) {
+                posts = posts.filter(p => p.id !== id);
+                saveData();
+                renderBlog();
+                renderAdminPosts();
+                showToast('Postingan dihapus');
+            }
+        }
+
+        function addRank(e) {
+            e.preventDefault();
+            const newRank = {
+                id: Date.now(),
+                name: document.getElementById('newRankName').value,
+                price: parseInt(document.getElementById('newRankPrice').value),
+                benefits: document.getElementById('newRankBenefits').value.split('\n').filter(b => b.trim()),
+                color: document.getElementById('newRankColor').value,
+                icon: "fa-cube",
+                featured: false
+            };
+            
+            ranks.push(newRank);
+            saveData();
+            renderRanks();
+            renderAdminRanks();
+            showToast('Rank baru ditambahkan!');
+            e.target.reset();
+        }
+
+        function editRank(id) {
+            const rank = ranks.find(r => r.id === id);
+            if (!rank) return;
+            
+            const newName = prompt('Nama Rank:', rank.name);
+            if (!newName) return;
+            const newPrice = prompt('Harga:', rank.price);
+            if (!newPrice) return;
+            const newBenefits = prompt('Benefits (pisah koma):', rank.benefits.join(', '));
+            if (!newBenefits) return;
+            
+            rank.name = newName;
+            rank.price = parseInt(newPrice);
+            rank.benefits = newBenefits.split(',').map(b => b.trim());
+            
+            saveData();
+            renderRanks();
+            renderAdminRanks();
+            showToast('Rank diperbarui!');
+        }
+
+        function deleteRank(id) {
+            if (confirm('Hapus rank ini?')) {
+                ranks = ranks.filter(r => r.id !== id);
+                saveData();
+                renderRanks();
+                renderAdminRanks();
+                showToast('Rank dihapus');
+            }
+        }
+
+        function setDiscount(e) {
+            e.preventDefault();
+            discount.percent = parseInt(document.getElementById('discountPercent').value);
+            discount.active = document.getElementById('discountActive').checked;
+            
+            saveData();
+            renderRanks();
+            
+            document.getElementById('discountStatus').textContent = discount.active ? 'AKTIF' : 'Tidak Aktif';
+            document.getElementById('discountStatus').className = discount.active ? 'text-emerald-400 font-semibold text-sm' : 'text-red-400 font-semibold text-sm';
+            document.getElementById('discountValue').textContent = discount.percent + '%';
+            
+            showToast('Pengaturan diskon disimpan!');
+        }
+
+        // Admin Functions
+        function toggleAdmin() {
+            const panel = document.getElementById('adminPanel');
+            const main = document.getElementById('mainContent');
+            
+            if (panel.classList.contains('hidden')) {
+                panel.classList.remove('hidden');
+                main.classList.add('hidden');
+                window.scrollTo(0, 0);
+            } else {
+                panel.classList.add('hidden');
+                main.classList.remove('hidden');
+            }
+        }
+
+        function adminLogin(e) {
+            e.preventDefault();
+            if (document.getElementById('adminUser').value === ADMIN_USER && 
+                document.getElementById('adminPass').value === ADMIN_PASS) {
+                
+                isAdmin = true;
+                document.getElementById('adminLogin').classList.add('hidden');
+                document.getElementById('adminDashboard').classList.remove('hidden');
+                renderAdminPosts();
+                renderAdminRanks();
+                
+                document.getElementById('discountPercent').value = discount.percent;
+                document.getElementById('discountActive').checked = discount.active;
+                document.getElementById('discountStatus').textContent = discount.active ? 'AKTIF' : 'Tidak Aktif';
+                document.getElementById('discountStatus').className = discount.active ? 'text-emerald-400 font-semibold text-sm' : 'text-red-400 font-semibold text-sm';
+                document.getElementById('discountValue').textContent = discount.percent + '%';
+                
+                showToast('Selamat datang, Admin!');
+            } else {
+                showToast('Username atau password salah!', 'error');
+            }
+        }
+
+        function adminLogout() {
+            isAdmin = false;
+            document.getElementById('adminLogin').classList.remove('hidden');
+            document.getElementById('adminDashboard').classList.add('hidden');
+            document.getElementById('adminUser').value = '';
+            document.getElementById('adminPass').value = '';
+        }
+
+        function showAdminTab(tab) {
+            document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            
+            document.querySelectorAll('.admin-tab').forEach(t => {
+                t.classList.remove('bg-emerald-500', 'text-white');
+                t.classList.add('bg-slate-800', 'text-gray-400');
+            });
+            
+            const activeBtn = document.querySelector(`[data-tab="${tab}"]`);
+            activeBtn.classList.remove('bg-slate-800', 'text-gray-400');
+            activeBtn.classList.add('bg-emerald-500', 'text-white');
+        }
+
+        // Store Modal
+        function openStore() {
+            document.getElementById('storeModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeStore() {
+            document.getElementById('storeModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Utilities
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = msg;
+            
+            toast.className = `toast fixed bottom-6 right-6 z-50 glass-card px-6 py-4 rounded-xl border-l-4 flex items-center gap-3 max-w-sm ${type === 'error' ? 'border-red-500' : 'border-emerald-500'} show`;
+            
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text);
+            showToast('IP disalin ke clipboard!');
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        }
+
+        function readPost(id) {
+            const post = posts.find(p => p.id === id);
+            if (!post) return;
+            
+            // Create modal for full post view
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm';
+            modal.innerHTML = `
+                <div class="glass-card rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8 relative">
+                    <button onclick="this.closest('.fixed').remove()" class="absolute top-4 right-4 w-10 h-10 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-gray-400 hover:text-white">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    ${post.image ? `<img src="${post.image}" class="w-full h-64 object-cover rounded-xl mb-6">` : ''}
+                    <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-semibold">${post.category}</span>
+                    <h2 class="font-display font-bold text-2xl text-white mt-4 mb-2">${post.title}</h2>
+                    <p class="text-gray-500 text-sm mb-6">${post.date}</p>
+                    <div class="text-gray-300 leading-relaxed whitespace-pre-line">${post.content}</div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+
+        // Close modal on outside click
+        document.getElementById('storeModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeStore();
+        });
+    </script>
+</body>
+</html>
